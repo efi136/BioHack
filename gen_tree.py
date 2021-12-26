@@ -18,7 +18,7 @@ withoutIndices = lambda m, ids: delete(delete(m, ids, axis=0), ids, axis=1)
 
 def appendRowCol(m, v):
     m = vstack((m, np.atleast_2d(v)))
-    v = np.append(v, 0)
+    v = np.append(v, 100000000)
     return hstack((m, np.atleast_2d(v).transpose()))
 
 
@@ -68,9 +68,9 @@ def main(args):
             names = pickle.load(f)
         with open('./cache/transition_matrix.pickle', 'rb') as f:
             transition_matrix = pickle.load(f)
-    D = -D
+    D = D.max() - D
     forest = [Leaf(seq) for seq in names]
-    tree = neighborJoin(D, forest, True, transition_matrix)
+    tree = neighborJoin(D, forest, False, transition_matrix)
     tree.draw()
     input()
 
