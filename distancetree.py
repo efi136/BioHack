@@ -1,5 +1,6 @@
 import matplotlib as plt
 import networkx as nx
+import numpy as np
 
 class Tree:
     def __init__(self, left = None, right = None, transition_matrix=None):
@@ -12,7 +13,17 @@ class Tree:
         self.name = self.generate_parent_name()
 
     def generate_parent_name(self):
-        return f'{self.left.name}_{self.right.name}'
+        new_name = ''
+        dct = self.transition_matrix
+        for i in range(len(self.left)):
+            l_letter = self.left[i]
+            r_letter = self.right[i]
+            l = []
+            for key in dct.keys():
+                l.append(dct[key][l_letter] * dct[key][r_letter])
+            max_letter = dct.keys()[np.argmax(l)]
+            new_name = new_name + max_letter
+        return new_name
 
     def get_graph(self, g=None):
         if g is None:
@@ -28,7 +39,8 @@ class Tree:
         g = self.get_graph()
         nx.draw(g)
         plt.pyplot.show()
-    
+
+
 class Leaf(Tree):
     def __init__(self, name):
         self.name = name
