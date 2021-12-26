@@ -9,7 +9,7 @@ import numpy as np
 
 class Fasta2DistancesMatrix:
     def __init__(self):
-        self.distance_calculator_method = DistanceCalculator().find_distance
+        self.distance_calculator = DistanceCalculator()
 
     def distance_matrix_gen(self, filename='./sequences.fasta'):
         sequences_obj = SeqIO.parse(filename, 'fasta')
@@ -17,10 +17,10 @@ class Fasta2DistancesMatrix:
         distance_matrix = [[] for _ in range(len(seqs_dct))]
         for idx_row, (id_row, seq_row) in enumerate(seqs_dct.items()):
             for idx_col, (id_col, seq_col) in enumerate(seqs_dct.items()):
-                current_distance = self.distance_calculator_method(seq_row, seq_col)
+                current_distance = self.distance_calculator.find_distance(seq_row, seq_col)
                 distance_matrix[idx_row].append(current_distance)
         np_array = np.array(distance_matrix)
-        return np_array, seqs_dct.keys()
+        return np_array, seqs_dct.keys(), self.distance_calculator.dist_matrix
 
 
 class MatrixLoader:
