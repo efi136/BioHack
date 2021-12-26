@@ -2,13 +2,17 @@ import matplotlib as plt
 import networkx as nx
 
 class Tree:
-    def __init__(self, left = None, right = None):
+    def __init__(self, left = None, right = None, transition_matrix=None):
         self.parent = None
         self.left  = left
         self.right = right
         left.parent = self
         right.parent = self
-        self.name = f'{left.name}_{right.name}'
+        self.transition_matrix = transition_matrix
+        self.name = self.generate_parent_name()
+
+    def generate_parent_name(self):
+        return f'{self.left.name}_{self.right.name}'
 
     def get_graph(self, g=None):
         if g is None:

@@ -30,12 +30,12 @@ def getNeighbors(D, use_saito_nei):
     return idxmin(D)
 
 
-def neighborJoin(D, forest, use_saito_nei):
+def neighborJoin(D, forest, use_saito_nei, transition_matrix):
     if len(D) == 2:
         return Tree(forest[0], forest[1])
     i, j = getNeighbors(D, use_saito_nei)
     u = [(D[i,k] + D[j,k] - D[i,j]) / 2 for k in range(len(D))]
-    forest = hstack((forest, [Tree(forest[i], forest[j])]))
+    forest = hstack((forest, [Tree(forest[i], forest[j], transition_matrix=transition_matrix)]))
     D = appendRowCol(D, u)
     D = withoutIndices(D, (i, j))
     forest = delete(forest, (i, j))
@@ -43,5 +43,5 @@ def neighborJoin(D, forest, use_saito_nei):
 
 
 if __name__ == "__main__":
-    tree = neighborJoin(D, forest)
+    tree = neighborJoin(D, forest, True, transition_matrix)
     print(tree)
