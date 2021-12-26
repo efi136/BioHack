@@ -53,7 +53,7 @@ def get_argparser():
 
 def main(args):
     D, names, transition_matrix = Fasta2DistancesMatrix().distance_matrix_gen(args.seq_file)
-    forest = map(Leaf(seq) for seq in names)
+    forest = [Leaf(seq) for seq in names]
     tree = neighborJoin(D, forest, True, transition_matrix)
     print(tree)
 

@@ -3,6 +3,7 @@ from typing import Dict, List
 from Bio import SeqIO
 from scipy.spatial import distance
 
+import os
 import Bio
 import numpy as np
 
@@ -26,7 +27,8 @@ class Fasta2DistancesMatrix:
 class MatrixLoader:
     def __init__(self, matrix_name='PAM10'):
         self.matrix_name = matrix_name
-        self.matrix_path = Path(f'./distance_matrices/distance_matrix_{self.matrix_name}')
+        dir_name = os.path.dirname(os.path.abspath(__file__))
+        self.matrix_path = Path(os.path.join(dir_name, 'distance_matrices', f'distance_matrix_{self.matrix_name}'))
         self.matrix = self.__matrix_loader()
 
     def get_matrix(self):
