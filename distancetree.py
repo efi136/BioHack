@@ -1,5 +1,9 @@
 import matplotlib as plt
 import networkx as nx
+import numpy as np
+from Bio import Phylo
+from io import StringIO
+import random
 
 class Tree:
     def __init__(self, left = None, right = None, transition_matrix=None):
@@ -12,8 +16,22 @@ class Tree:
         self.name = self.generate_parent_name()
 
     def generate_parent_name(self):
-        return hash(self)
-        return f'{self.left.name}_{self.right.name}'
+        new_name = ''
+        dct = self.transition_matrix
+        for i in range(len(self.left.name)):
+            l_letter = self.left.name[i]
+            r_letter = self.right.name[i]
+            max_score = 0
+            for key in dct.keys():
+                cur_score = dct[key][l_letter] + dct[key][r_letter]
+                if cur_score > max_score:
+                    max_score = cur_score
+                    max_letter = [key]
+                if (cur_score == max_score and random.random() > 0.5):
+                    max_score = cur_score
+                    max_letter.append(key)
+            new_name = new_name + random.choice(max_letter)
+        return new_name
 
     def get_graph(self, g=None):
         if g is None:
@@ -24,12 +42,26 @@ class Tree:
         g.add_edge(self.left.name, self.name)
         g.add_edge(self.right.name, self.name)
         return g
+
+    def get_phylo_string(self):
+        return f'({self.left.get_phylo_string()}, {self.right.get_phylo_string()}){self.name}'
+
+    def get_phylo_graph(self):
+        phylo_str = self.get_phylo_string()
+        phylo_f = StringIO(phylo_str)
+        return Phylo.read(phylo_f, "newick")
     
-    def draw(self):
+    def draw_graph(self):
         g = self.get_graph()
         nx.draw(g)
         plt.pyplot.show()
+
     
+    def draw(self):
+        tree = self.get_phylo_graph()
+        tree.rooted = True
+        Phylo.draw(tree)
+
 class Leaf(Tree):
     def __init__(self, name):
         self.name = name
@@ -45,3 +77,6 @@ class Leaf(Tree):
             g = nx.Graph()
         g.add_node(self.name)
         return g
+    
+    def get_phylo_string(self):
+        return self.name

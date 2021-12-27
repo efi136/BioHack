@@ -23,7 +23,7 @@ class Fasta2DistancesMatrix:
                 current_distance = self.distance_calculator.find_distance(seq_row, seq_col)
                 distance_matrix[idx_row].append(current_distance)
         np_array = np.array(distance_matrix)
-        return np_array, seqs_dct.keys(), self.distance_calculator.dist_matrix
+        return np_array, seqs_dct.values()
 
     def _matrix_saver(self, np_matrix, ids):
         with open(self.pickle_path, 'wb') as handle:

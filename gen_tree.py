@@ -4,7 +4,8 @@ import argparse
 import pickle
 from distancetree import *
 from distance_utils.distance_matrix import Fasta2DistancesMatrix
-
+from distance_utils.distance_matrix import DistanceCalculator
+import matplotlib.pyplot as plt
 USE_CACHE = True
 
 map2    = lambda fn, mat: map(lambda arr: map(fn, arr), mat)
@@ -28,7 +29,10 @@ def get_saito_nei_matrix(D):
     Q = np.zeros((n, n))
     for i in range(n):
         for j in range(n):
-            Q[i, j] = r[i] + r[j] - D[i,j]
+            if i == j:
+                Q[i, j] = 1000000000
+            else:
+                Q[i, j] = r[i] + r[j] - D[i,j]
     return Q
 
 
@@ -42,7 +46,7 @@ def getNeighbors(D, use_saito_nei):
 def neighborJoin(D, forest, use_saito_nei, transition_matrix):
     while True:
         if len(D) == 2:
-            return Tree(forest[0], forest[1])
+            return Tree(forest[0], forest[1], transition_matrix=transition_matrix)
         i, j = getNeighbors(D, use_saito_nei)
         u = np.array([(D[i,k] + D[j,k] - D[i,j]) / 2 for k in range(len(D))])
         forest = hstack((forest, [Tree(forest[i], forest[j], transition_matrix=transition_matrix)]))
@@ -58,20 +62,54 @@ def get_argparser():
     return parser
 
 
+def histogram(origin_path, others):
+    f = open(origin_path, 'r')
+    origin = ''.join([s.split('\n')[0] for s in f.readlines()])
+
+    dc = DistanceCalculator()
+    ls = []
+    for seq in others:
+        ls.append(dc.find_distance(origin, seq))
+    plt.hist(ls, bins=30)
+    plt.show()
+
+
+def print_aligned(origin_path, s2):
+    f = open(origin_path, 'r')
+    origin = ''.join([s.split('\n')[0] for s in f.readlines()])
+    i = 0
+    while i + 50 < len(origin):
+        print(origin[i:i + 50])
+        print(s2[i:i + 50])
+        print()
+        i += 50
+    print(origin[i:])
+    print(s2[i:])
+    print()
+
+    dc = DistanceCalculator()
+    score = dc.find_distance(origin, s2)
+    print("===== Score:" + str(score) + " =====")
+    print("score of origin vs origin:" + str(dc.find_distance(origin, origin)))
+
+
+
 def main(args):
+    calculator = Fasta2DistancesMatrix()
     if not USE_CACHE:
-        D, names, transition_matrix = Fasta2DistancesMatrix().distance_matrix_gen(args.seq_file)
+        D, names = calculator.distance_matrix_gen(args.seq_file)
     else:
         with open('./cache/distance.pickle', 'rb') as f:
             D = pickle.load(f)
         with open('./cache/names.pickle', 'rb') as f:
             names = pickle.load(f)
-        with open('./cache/transition_matrix.pickle', 'rb') as f:
-            transition_matrix = pickle.load(f)
+    transition_matrix = calculator.distance_calculator.dist_matrix
     D = D.max() - D
     forest = [Leaf(seq) for seq in names]
-    tree = neighborJoin(D, forest, False, transition_matrix)
+    tree = neighborJoin(D, forest, args.saito, transition_matrix)
     tree.draw()
+    histogram("origin.txt", names)
+    print_aligned("origin.txt", tree.name)
     input()
 
 
@@ -79,4 +117,3 @@ if __name__ == "__main__":
     parser = get_argparser()
     args = parser.parse_args()
     main(args)
-    
