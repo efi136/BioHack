@@ -40,7 +40,7 @@ class Tree:
         return g
 
     def get_phylo_string(self):
-        return f'({self.left.get_phylo_string()}, {self.right.get_phylo_string()})'
+        return f'({self.left.get_phylo_string()}, {self.right.get_phylo_string()}){self.name}'
 
     def get_phylo_graph(self):
         phylo_str = self.get_phylo_string()
