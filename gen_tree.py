@@ -62,15 +62,15 @@ def get_argparser():
 
 
 def main(args):
+    calculator = Fasta2DistancesMatrix()
     if not USE_CACHE:
-        D, names, transition_matrix = Fasta2DistancesMatrix().distance_matrix_gen(args.seq_file)
+        D, names = calculator.distance_matrix_gen(args.seq_file)
     else:
         with open('./cache/distance.pickle', 'rb') as f:
             D = pickle.load(f)
         with open('./cache/names.pickle', 'rb') as f:
             names = pickle.load(f)
-        with open('./cache/transition_matrix.pickle', 'rb') as f:
-            transition_matrix = pickle.load(f)
+    transition_matrix = calculator.distance_calculator.dist_matrix
     D = D.max() - D
     forest = [Leaf(seq) for seq in names]
     tree = neighborJoin(D, forest, args.saito, transition_matrix)
