@@ -28,6 +28,8 @@ def get_saito_nei_matrix(D):
     Q = np.zeros((n, n))
     for i in range(n):
         for j in range(n):
+            if i == j:
+                Q[i, j] = 1000000000
             Q[i, j] = r[i] + r[j] - D[i,j]
     return Q
 
