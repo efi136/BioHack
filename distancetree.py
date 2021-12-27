@@ -23,7 +23,7 @@ class Tree:
             r_letter = self.right.name[i]
             max_score = 0
             for key in dct.keys():
-                cur_score = dct[key][l_letter] * dct[key][r_letter]
+                cur_score = dct[key][l_letter] + dct[key][r_letter]
                 if cur_score > max_score:
                     max_score = cur_score
                     max_letter = [key]

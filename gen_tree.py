@@ -4,7 +4,8 @@ import argparse
 import pickle
 from distancetree import *
 from distance_utils.distance_matrix import Fasta2DistancesMatrix
-
+from distance_utils.distance_matrix import DistanceCalculator
+import matplotlib.pyplot as plt
 USE_CACHE = True
 
 map2    = lambda fn, mat: map(lambda arr: map(fn, arr), mat)
@@ -61,6 +62,35 @@ def get_argparser():
     return parser
 
 
+def histogram(origin, others):
+    dc = DistanceCalculator()
+    ls = []
+    for seq in others:
+        ls.append(dc.find_distance(origin, seq))
+    plt.hist(ls, bins=30)
+    plt.show()
+
+
+def print_aligned(origin_path, s2):
+    f = open(origin_path, 'r')
+    origin = ''.join([s.split('\n')[0] for s in f.readlines()])
+    i = 0
+    while i + 50 < len(origin):
+        print(origin[i:i + 50])
+        print(s2[i:i + 50])
+        print()
+        i += 50
+    print(origin[i:])
+    print(s2[i:])
+    print()
+
+    dc = DistanceCalculator()
+    score = dc.find_distance(origin, s2)
+    print("===== Score:" + str(score) + " =====")
+    print("score of origin vs origin:" + str(dc.find_distance(origin, origin)))
+
+
+
 def main(args):
     calculator = Fasta2DistancesMatrix()
     if not USE_CACHE:
@@ -75,7 +105,8 @@ def main(args):
     forest = [Leaf(seq) for seq in names]
     tree = neighborJoin(D, forest, args.saito, transition_matrix)
     tree.draw()
-    print(tree.name)
+    histogram("origin.txt", names)
+    print_aligned("origin.txt", tree.name)
     input()
 
 
