@@ -1,5 +1,7 @@
 import matplotlib as plt
 import networkx as nx
+from Bio import Phylo
+from io import StringIO
 
 class Tree:
     def __init__(self, left = None, right = None, transition_matrix=None):
@@ -24,12 +26,25 @@ class Tree:
         g.add_edge(self.left.name, self.name)
         g.add_edge(self.right.name, self.name)
         return g
+
+    def get_phylo_string(self):
+        return f'({self.left.get_phylo_string()}, {self.right.get_phylo_string()})'
+
+    def get_phylo_graph(self):
+        phylo_str = self.get_phylo_string()
+        phylo_f = StringIO(phylo_str)
+        return Phylo.read(phylo_f, "newick")
     
-    def draw(self):
+    def draw_graph(self):
         g = self.get_graph()
         nx.draw(g)
         plt.pyplot.show()
     
+    def draw(self):
+        tree = self.get_phylo_graph()
+        tree.rooted = True
+        Phylo.draw(tree)
+
 class Leaf(Tree):
     def __init__(self, name):
         self.name = name
@@ -45,3 +60,6 @@ class Leaf(Tree):
             g = nx.Graph()
         g.add_node(self.name)
         return g
+    
+    def get_phylo_string(self):
+        return self.name
