@@ -75,6 +75,7 @@ def main(args):
     forest = [Leaf(seq) for seq in names]
     tree = neighborJoin(D, forest, args.saito, transition_matrix)
     tree.draw()
+    print(tree.name)
     input()
 
 
