@@ -42,7 +42,7 @@ def getNeighbors(D, use_saito_nei):
 def neighborJoin(D, forest, use_saito_nei, transition_matrix):
     while True:
         if len(D) == 2:
-            return Tree(forest[0], forest[1])
+            return Tree(forest[0], forest[1], transition_matrix=transition_matrix)
         i, j = getNeighbors(D, use_saito_nei)
         u = np.array([(D[i,k] + D[j,k] - D[i,j]) / 2 for k in range(len(D))])
         forest = hstack((forest, [Tree(forest[i], forest[j], transition_matrix=transition_matrix)]))
