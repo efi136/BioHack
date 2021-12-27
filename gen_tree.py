@@ -73,7 +73,7 @@ def main(args):
             transition_matrix = pickle.load(f)
     D = D.max() - D
     forest = [Leaf(seq) for seq in names]
-    tree = neighborJoin(D, forest, False, transition_matrix)
+    tree = neighborJoin(D, forest, args.saito, transition_matrix)
     tree.draw()
     input()
 
