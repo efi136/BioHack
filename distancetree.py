@@ -24,10 +24,13 @@ class Tree:
             max_score = 0
             for key in dct.keys():
                 cur_score = dct[key][l_letter] * dct[key][r_letter]
-                if cur_score > max_score or (cur_score == max_score and random.random() > 0.5):
+                if cur_score > max_score:
                     max_score = cur_score
-                    max_letter = key
-            new_name = new_name + max_letter
+                    max_letter = [key]
+                if (cur_score == max_score and random.random() > 0.5):
+                    max_score = cur_score
+                    max_letter.append(key)
+            new_name = new_name + random.choice(max_letter)
         return new_name
 
     def get_graph(self, g=None):
