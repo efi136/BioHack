@@ -17,13 +17,15 @@ class Tree:
     def generate_parent_name(self):
         new_name = ''
         dct = self.transition_matrix
-        for i in range(len(self.left)):
-            l_letter = self.left[i]
-            r_letter = self.right[i]
-            l = []
+        for i in range(len(self.left.name)):
+            l_letter = self.left.name[i]
+            r_letter = self.right.name[i]
+            max_score = 0
             for key in dct.keys():
-                l.append(dct[key][l_letter] * dct[key][r_letter])
-            max_letter = dct.keys()[np.argmax(l)]
+                cur_score = dct[key][l_letter] * dct[key][r_letter]
+                if cur_score > max_score:
+                    max_score = cur_score
+                    max_letter = key
             new_name = new_name + max_letter
         return new_name
 
