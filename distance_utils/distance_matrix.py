@@ -21,7 +21,10 @@ class Fasta2DistancesMatrix:
                 current_distance = self.distance_calculator.find_distance(seq_row, seq_col)
                 distance_matrix[idx_row].append(current_distance)
         np_array = np.array(distance_matrix)
-        return np_array, seqs_dct.values()
+        # print(seqs_dct)
+        # print(seqs_dct.values())
+        # print("keys: ", seqs_dct.keys())
+        return np_array, seqs_dct.values(), seqs_dct.keys()
 
 
 class MatrixLoader:

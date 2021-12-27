@@ -6,7 +6,7 @@ from distancetree import *
 from distance_utils.distance_matrix import Fasta2DistancesMatrix
 from distance_utils.distance_matrix import DistanceCalculator
 import matplotlib.pyplot as plt
-USE_CACHE = True
+USE_CACHE = False
 
 map2    = lambda fn, mat: map(lambda arr: map(fn, arr), mat)
 idxmin  = lambda mat: unravel_index(argmin(mat), shape(mat))
@@ -97,7 +97,7 @@ def print_aligned(origin_path, s2):
 def main(args):
     calculator = Fasta2DistancesMatrix()
     if not USE_CACHE:
-        D, names = calculator.distance_matrix_gen(args.seq_file)
+        D, seqs, names = calculator.distance_matrix_gen(args.seq_file)
     else:
         with open('./cache/distance.pickle', 'rb') as f:
             D = pickle.load(f)
@@ -105,10 +105,12 @@ def main(args):
             names = pickle.load(f)
     transition_matrix = calculator.distance_calculator.dist_matrix
     D = D.max() - D
-    forest = [Leaf(seq) for seq in names]
+    print(names)
+    # print(seqs)
+    forest = [Leaf(seq, name) for name, seq in zip(names, seqs)]
     tree = neighborJoin(D, forest, args.saito, transition_matrix)
     tree.draw()
-    histogram("origin.txt", names)
+    # histogram("origin.txt", names)
     print_aligned("origin.txt", tree.name)
     input()
 
