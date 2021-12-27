@@ -12,6 +12,7 @@ class Tree:
         self.name = self.generate_parent_name()
 
     def generate_parent_name(self):
+        return hash(self)
         return f'{self.left.name}_{self.right.name}'
 
     def get_graph(self, g=None):
