@@ -62,7 +62,10 @@ def get_argparser():
     return parser
 
 
-def histogram(origin, others):
+def histogram(origin_path, others):
+    f = open(origin_path, 'r')
+    origin = ''.join([s.split('\n')[0] for s in f.readlines()])
+
     dc = DistanceCalculator()
     ls = []
     for seq in others:
