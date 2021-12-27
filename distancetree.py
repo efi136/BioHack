@@ -3,6 +3,7 @@ import networkx as nx
 import numpy as np
 from Bio import Phylo
 from io import StringIO
+import random
 
 class Tree:
     def __init__(self, left = None, right = None, transition_matrix=None):
@@ -23,7 +24,7 @@ class Tree:
             max_score = 0
             for key in dct.keys():
                 cur_score = dct[key][l_letter] * dct[key][r_letter]
-                if cur_score > max_score:
+                if cur_score > max_score or (cur_score == max_score and random.random() > 0.5):
                     max_score = cur_score
                     max_letter = key
             new_name = new_name + max_letter
