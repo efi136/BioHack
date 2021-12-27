@@ -8,7 +8,7 @@ import random
 class Tree:
     def __init__(self, left = None, right = None, transition_matrix=None):
         self.parent = None
-        self.left  = left
+        self.left = left
         self.right = right
         left.parent = self
         right.parent = self
@@ -63,8 +63,9 @@ class Tree:
         Phylo.draw(tree)
 
 class Leaf(Tree):
-    def __init__(self, name):
+    def __init__(self, name, id):
         self.name = name
+        self.id = id
     
     def __repr__(self):
         return self.name
