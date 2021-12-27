@@ -5,8 +5,9 @@ from Bio import Phylo
 from io import StringIO
 import random
 
+
 class Tree:
-    def __init__(self, left = None, right = None, transition_matrix=None):
+    def __init__(self, left=None, right=None, transition_matrix=None):
         self.parent = None
         self.left = left
         self.right = right
@@ -44,32 +45,42 @@ class Tree:
         return g
 
     def get_phylo_string(self):
-        return f'({self.left.get_phylo_string()}, {self.right.get_phylo_string()}){self.name}'
+        left_string = self.left.get_phylo_string()
+        right_string = self.right.get_phylo_string()
+        string = f'({left_string}, {right_string}){self.name}'
+        return string
+
+    def get_phylo_id(self):
+        left_string = self.left.get_phylo_id()
+        right_string = self.right.get_phylo_id()
+        string = f'({left_string}, {right_string})'
+        return string
 
     def get_phylo_graph(self):
-        phylo_str = self.get_phylo_string()
+        phylo_str = self.get_phylo_id()
         phylo_f = StringIO(phylo_str)
         return Phylo.read(phylo_f, "newick")
-    
+
     def draw_graph(self):
         g = self.get_graph()
         nx.draw(g)
         plt.pyplot.show()
 
-    
     def draw(self):
         tree = self.get_phylo_graph()
         tree.rooted = True
         Phylo.draw(tree)
+        Phylo.draw_ascii(tree)
+
 
 class Leaf(Tree):
     def __init__(self, name, id):
         self.name = name
         self.id = id
-    
+
     def __repr__(self):
         return self.name
-    
+
     def __eq__(self, other):
         return self.name == other.name
 
@@ -78,6 +89,9 @@ class Leaf(Tree):
             g = nx.Graph()
         g.add_node(self.name)
         return g
-    
+
     def get_phylo_string(self):
         return self.name
+
+    def get_phylo_id(self):
+        return self.id

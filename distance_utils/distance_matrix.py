@@ -14,7 +14,7 @@ class Fasta2DistancesMatrix:
         self.pickle_path = Path('./dist_matrix_as_pickle.pickle')
         self.distance_calculator = DistanceCalculator()
 
-    def _distance_matrix_gen(self, filename='./sequences.fasta'):
+    def distance_matrix_gen(self, filename='./sequences.fasta'):
         sequences_obj = SeqIO.parse(filename, 'fasta')
         seqs_dct = {sequence.id: sequence.seq for sequence in sequences_obj}
         distance_matrix = [[] for _ in range(len(seqs_dct))]
@@ -27,24 +27,24 @@ class Fasta2DistancesMatrix:
         # print(seqs_dct.values())
         # print("keys: ", seqs_dct.keys())
         return np_array, seqs_dct.values(), seqs_dct.keys()
-
-    def _matrix_saver(self, np_matrix, ids):
-        with open(self.pickle_path, 'wb') as handle:
-            pickle.dump({'dist_matrix': np_matrix, 'ids': list(ids)}, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-    def _matrix_loader(self):
-        with open(self.pickle_path, 'rb') as handle:
-            content = pickle.load(handle)
-        dist_matrix, ids = content['dist_matrix'], content['ids']
-        return dist_matrix, ids
-
-    def get_distance_matrix(self, load_if_exists=True):
-        if load_if_exists and self.pickle_path.exists():
-            dist_matrix, ids = self._matrix_loader()
-            return dist_matrix, ids
-        dist_matrix, ids = self._distance_matrix_gen()
-        self._matrix_saver(dist_matrix, list(ids))
-        return dist_matrix, ids
+    #
+    # def _matrix_saver(self, np_matrix, ids):
+    #     with open(self.pickle_path, 'wb') as handle:
+    #         pickle.dump({'dist_matrix': np_matrix, 'ids': list(ids)}, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    #
+    # def _matrix_loader(self):
+    #     with open(self.pickle_path, 'rb') as handle:
+    #         content = pickle.load(handle)
+    #     dist_matrix, ids = content['dist_matrix'], content['ids']
+    #     return dist_matrix, ids
+    #
+    # def get_distance_matrix(self, load_if_exists=True):
+    #     if load_if_exists and self.pickle_path.exists():
+    #         dist_matrix, ids = self._matrix_loader()
+    #         return dist_matrix, ids
+    #     dist_matrix, ids = self._distance_matrix_gen()
+    #     self._matrix_saver(dist_matrix, list(ids))
+    #     return dist_matrix, ids
 
 
 class MatrixLoader:
