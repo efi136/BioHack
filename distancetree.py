@@ -65,13 +65,16 @@ class Tree:
         g = self.get_graph()
         nx.draw(g)
         plt.pyplot.show()
-
-    def draw(self):
+    
+    def draw(self, save_file=None):
         tree = self.get_phylo_graph()
         tree.rooted = True
-        Phylo.draw(tree)
-        Phylo.draw_ascii(tree)
-
+        if save_file:
+            Phylo.draw(tree, do_show=False)
+            plt.pyplot.savefig(save_file)
+        else:
+            Phylo.draw(tree)        
+            
 
 class Leaf(Tree):
     def __init__(self, name, id):

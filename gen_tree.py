@@ -109,10 +109,7 @@ def main(args):
     # print(seqs)
     forest = [Leaf(seq, name) for name, seq in zip(names, seqs)]
     tree = neighborJoin(D, forest, args.saito, transition_matrix)
-    tree.draw()
-    # histogram("origin.txt", names)
-    print_aligned("origin.txt", tree.name)
-    input()
+    tree.draw('saito' if args.saito else 'regular')
 
 
 if __name__ == "__main__":
